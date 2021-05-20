@@ -1,8 +1,17 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen , fireEvent} from '@testing-library/react';
 import App from './App';
+import renderer from 'react-test-renderer';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+
+test('it renders correctly', async () => {
+  const Component = renderer.create(<App />);
+  const tree = Component.toJSON();
+  const container = render(<App />);
+  const div = container.getByText('Count: 0');
+  setTimeout(() => {
+    fireEvent(div, new MouseEvent('click'))
+    expect(div.innerHTML).toBe('Count: 1');
+    expect(tree).toMatchSnapshot();
+  }, 0);
+  
+})
